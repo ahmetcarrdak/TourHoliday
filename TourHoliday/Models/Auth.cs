@@ -1,0 +1,11 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace TourHoliday.Models
+{
+    public class Auth
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+}

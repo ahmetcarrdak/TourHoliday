@@ -1,0 +1,6 @@
+﻿services:
+  tourholiday:
+    image: tourholiday
+    build:
+      context: .
+      dockerfile: TourHoliday/Dockerfile
