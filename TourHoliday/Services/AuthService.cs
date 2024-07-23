@@ -22,16 +22,18 @@ public class AuthService : IAuthService
     {
         _key = configuration["Jwt:Key"];
         _issuer = configuration["Jwt:Issuer"];
-        _audience = configuration["Jwt:Audience"];
+        _userAudience = configuration["Jwt:Audience"];
+        _agencyAudience = configuration["Jwt:AgencyAudience"];
         _expiresInMinutes = int.Parse(configuration["Jwt:ExpiresInMinutes"]);
         _userService = userService;
         _agencyService = agencyService;
     }
 
-    public string GenerateToken(string userId)
+    public string GenerateToken(string userId, bool isAgency = false)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_key);
+        var audience = isAgency ? _agencyAudience : _userAudience;
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]
@@ -40,9 +42,8 @@ public class AuthService : IAuthService
             }),
             Expires = DateTime.UtcNow.AddMinutes(_expiresInMinutes),
             Issuer = _issuer,
-            Audience = _audience,
-            SigningCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            Audience = audience,
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
