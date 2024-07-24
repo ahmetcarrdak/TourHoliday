@@ -13,7 +13,8 @@ public class AuthService : IAuthService
 {
     private readonly string _key;
     private readonly string _issuer;
-    private readonly string _audience;
+    private readonly string _userAudience;
+    private readonly string _agencyAudience;
     private readonly int _expiresInMinutes;
     private readonly IUserService _userService;
     private readonly IAgencyService _agencyService;
@@ -22,7 +23,7 @@ public class AuthService : IAuthService
     {
         _key = configuration["Jwt:Key"];
         _issuer = configuration["Jwt:Issuer"];
-        _userAudience = configuration["Jwt:Audience"];
+        _userAudience = configuration["Jwt:UserAudience"];
         _agencyAudience = configuration["Jwt:AgencyAudience"];
         _expiresInMinutes = int.Parse(configuration["Jwt:ExpiresInMinutes"]);
         _userService = userService;
@@ -68,6 +69,6 @@ public class AuthService : IAuthService
             return null;
         }
 
-        return GenerateToken(agency.Id.ToString());
+        return GenerateToken(agency.Id.ToString(), true);
     }
 }
